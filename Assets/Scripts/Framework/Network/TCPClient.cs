@@ -47,6 +47,11 @@ public class TCPClient : MonoBehaviour
         _parser = parser;
     }
 
+    public bool IsConnected()
+    {
+        return (_client != null && _client.Connected);
+    }
+
     // Start is called before the first frame update
     void Start()
     {

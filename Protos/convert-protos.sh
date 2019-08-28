@@ -1,0 +1,1 @@
+protoc --proto_path= playermgr.proto --csharp_out=../Assets/Scripts/Protos/

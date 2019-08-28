@@ -1,0 +1,33 @@
+syntax = "proto3";
+
+package playermgr;
+
+message LoginReq{
+    string  username=1;
+    string  password=2;
+}
+
+message LoginRsp{
+	enum Result{
+		SUCCESS=0;
+		USERNAME_PW_ERROR=1;
+		LOGIN_OTHER=2;
+	}
+    Result  result=1;
+    int32   userid=2;
+    string  username=3;
+    int32   glod=4;
+}
+
+message Logout{
+    int32   userid=1;
+}
+
+message LoginRoomRsp{
+    enum Result{
+		SUCCESS=0;
+		ERROR=1;
+	}
+    Result  result=1;
+    int32   userid=2;
+}

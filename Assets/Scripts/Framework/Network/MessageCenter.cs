@@ -65,12 +65,6 @@ public class MessageCenter : MonoBehaviour, IDataParser
     {
         client.Listen(this);
     }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
 }
 
 } // End of namespace Network

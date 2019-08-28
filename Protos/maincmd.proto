@@ -1,0 +1,23 @@
+syntax = "proto3";
+
+package MainCMD;
+
+enum Command{
+        CMD_BASE = 0;
+        CMD_S2S = 1; //服务器之间的消息转发
+        CMD_GATE_REG = 2; //网关注册到中心服务器
+        CMD_GATE_QUIT = 3; //网关退出中心服务器
+        CMD_GATE_LOGIN_OTHER = 4; //玩家从其他网关登录
+        CMD_GAME_REG = 5; //游戏服注册到中心服务器
+        CMD_GAME_QUIT = 6; //游戏服退出中心服务器
+        CMD_GAMESVR_REQ = 7; //获取游戏服务器地址
+        CMD_GAMESVR_RSP = 8; //返回游戏服务器地址
+        CMD_USER_QUIT_GAME = 9; //玩家退出游戏
+        CMD_LOGIN = 100; //登陆
+        CMD_LOGIN_GAMESVR = 101; //玩家登陆游戏服
+        CMD_LOGOUT = 102; //客户端退出
+        CMD_ROLE_CREATE = 103; //创建角色
+        CMD_ROLE_CREATE_RSP = 104; //创建角色返回
+        CMD_ROLE_LOAD = 105; //加载角色
+        CMD_DBSERVER = 5000; //与数据库服务端通信
+	}

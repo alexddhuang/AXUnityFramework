@@ -17,6 +17,8 @@ public interface IDataParser
 
 public class TCPClient : MonoBehaviour
 {
+    private static TCPClient _instance;
+    
     public string IP = "127.0.0.1";
     public int PORT = 0;
 
@@ -78,14 +80,23 @@ public class TCPClient : MonoBehaviour
         
     }
 
+    void Awake() {
+		if (_instance == null) {
+			_instance = this;
+			DontDestroyOnLoad(this.gameObject);
+		}
+	}
+
+	void OnDestroy() {
+		_instance = null;
+	}
+
     private void ReceivingData() 
     {
         Debug.Log("Receiving data");
         var stream = _client.GetStream();
         while (_client.Connected) {
             if (stream.CanRead && _client.Available > 0) {
-                Debug.Log($"{_client.Available} bytes are available to be read.");
-
                 var header = new byte[2];
                 var num = stream.Read(header, 0, header.Length);
                 if (num > 0) {

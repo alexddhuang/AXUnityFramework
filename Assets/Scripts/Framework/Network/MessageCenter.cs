@@ -19,7 +19,13 @@ public class MessageCenter : MonoBehaviour, IDataParser
 {
     public TCPClient client;
 
+    public float Heartbeat = 5f;
+
     private Dictionary<short, IMessageHandler> _handlers = new Dictionary<short, IMessageHandler>();
+
+    private static MessageCenter _instance;
+
+    private Int32 _lastSendingTime;
 
     public void Register(short cmd, IMessageHandler handler)
     {
@@ -47,17 +53,24 @@ public class MessageCenter : MonoBehaviour, IDataParser
     public void Send(short cmd, pb.IMessage message)
     {
         byte[] head = BitConverter.GetBytes(IPAddress.HostToNetworkOrder(cmd));
-        int bodySize = message.CalculateSize();
-        byte[] body = new byte[bodySize];
-        
-        pb.CodedOutputStream output = new pb.CodedOutputStream(body);
-        message.WriteTo(output);
 
-        byte[] buffer = new byte[head.Length + body.Length];
-        head.CopyTo(buffer, 0);
-        body.CopyTo(buffer, head.Length);
+        if (message == null) {
+            client.Send(head);
+        } else {
+            int bodySize = message.CalculateSize();
+            byte[] body = new byte[bodySize];
+            
+            pb.CodedOutputStream output = new pb.CodedOutputStream(body);
+            message.WriteTo(output);
 
-        client.Send(buffer);
+            byte[] buffer = new byte[head.Length + body.Length];
+            head.CopyTo(buffer, 0);
+            body.CopyTo(buffer, head.Length);
+
+            client.Send(buffer);
+        }
+
+        _lastSendingTime = Time.TimeUtils.UnixTime();
     }
 
     // Start is called before the first frame update
@@ -65,6 +78,25 @@ public class MessageCenter : MonoBehaviour, IDataParser
     {
         client.Listen(this);
     }
+
+    void Update()
+    {
+        if (Time.TimeUtils.UnixTime() - _lastSendingTime > Heartbeat) {
+            // Heartbeat
+            Send(0, null);
+        }
+    }
+
+    void Awake() {
+		if (_instance == null) {
+			_instance = this;
+			DontDestroyOnLoad(this.gameObject);
+		}
+	}
+
+	void OnDestroy() {
+		_instance = null;
+	}
 }
 
 } // End of namespace Network
